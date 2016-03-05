@@ -21,7 +21,6 @@ struct PokerHand MakeHand(struct PokerHand Player_Cards){
 
   const char ranks[]={'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
   const char suits[]={'s', 'h', 'c', 'd'};
-  srand((unsigned) time(NULL));
   int card_counter=0, card_rank, card_suit;
   while(card_counter<hand_size){
     //rank is random number from 1 to 13
@@ -97,7 +96,7 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
     }
 
     if(Final.best_hand<flush){
-      for(i=0; i<=4; i++){
+      for(i=0; i<4; i++){
         if(Player_Cards.poker_suits[i]==5){
           Final.best_hand=flush;
           Final.TypeOfHand[0]=suits[i];
@@ -204,6 +203,7 @@ void PrintCards(struct FinalHand besthand){
 
 
 int main(){
+  srand((unsigned) time(NULL));
   struct PokerHand player1;
   player1=MakeHand(player1);
 
@@ -223,7 +223,9 @@ int main(){
     }
   } */
   struct FinalHand besthand1=BestFiveCards(player1);
+  struct FinalHand besthand2=BestFiveCards(player2);
   PrintCards(besthand1);
+  PrintCards(besthand2);
 
 return 0;
 }
