@@ -42,6 +42,7 @@ struct PokerHand MakeHand(struct PokerHand Player_Cards){
   return Player_Cards;
 }
 
+
 struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
   const char ranks[]={'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
   const char suits[]={'s', 'h', 'c', 'd'};
@@ -201,14 +202,54 @@ void PrintCards(struct FinalHand besthand){
   printf("\n");
 }
 
+struct FinalHand WhoWins(struct FinalHand besthands[], int player_count){
+  int i;
+  int player_number;
+  struct FinalHand Winner;
+  Winner.best_hand=high_card;
+  for(i=0; i<player_count; i++){
+    if(besthands[i].best_hand>Winner.best_hand){
+      Winner.best_hand=besthands[i].best_hand;
+      player_number=i;
+      Winner.TypeOfHand[0]=besthands[i].TypeOfHand[0];
+      Winner.TypeOfHand[1]=besthands[i].TypeOfHand[1];
+    }
+    else if(besthands[i].best_hand==Winner.best_hand){
+      if(besthands[i].TypeOfHand[0]>Winner.TypeOfHand[0]){
+        player_number=i;
+        Winner.TypeOfHand[0]=besthands[i].TypeOfHand[0];
+        Winner.TypeOfHand[1]=besthands[i].TypeOfHand[1];
+      }
+    }
+    else{
+      continue;
+    }
+
+  }
+  printf("Player %d wins with: ", player_number);
+  PrintCards(Winner);
+
+  return Winner;
+
+}
 
 int main(){
   srand((unsigned) time(NULL));
-  struct PokerHand player1;
-  player1=MakeHand(player1);
+  int player_count, i;
+  printf("How many players do you want to have? ");
+  scanf("%d", &player_count);
+  printf("\n");
+  struct PokerHand players[player_count];
+  struct FinalHand besthands[player_count];
+  for(i=0; i<player_count; i++){
+    printf("Player %d: \n", i);
+    players[i]=MakeHand(players[i]);
+    besthands[i]=BestFiveCards(players[i]);
+    PrintCards(besthands[i]);
+    printf("\n");
 
-  struct PokerHand player2;
-  player2=MakeHand(player2);
+  }
+  WhoWins(besthands, player_count);
   /*
   //Testing Purposes
   int i;
@@ -222,10 +263,7 @@ int main(){
       player1.poker_ranks[i]=0;
     }
   } */
-  struct FinalHand besthand1=BestFiveCards(player1);
-  struct FinalHand besthand2=BestFiveCards(player2);
-  PrintCards(besthand1);
-  PrintCards(besthand2);
 
-return 0;
+
+  return 0;
 }
