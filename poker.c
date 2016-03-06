@@ -8,6 +8,18 @@ Deals out a random poker hand, and then tells the user what hand they have.
 #include <time.h>
 #include "poker.h"
 
+void AsciiCard(int card_rank, int card_suit) {
+  const char ranks[]={'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+  const char* suits[]={"♠", "♥", "♦", "♣"};
+  if(card_suit != -1 && card_rank != -1) {
+    printf(" ______ \n|%c     |\n|%s     |\n", ranks[card_rank], suits[card_suit]);
+  } else if(card_rank != -1) {
+    printf(" ______ \n|%c     |\n|      |\n", ranks[card_rank]);
+  } else if(card_suit != -1) {
+    printf(" ______ \n|      |\n|%s     |\n", suits[card_suit]);
+  }
+}
+
 struct PokerHand MakeHand(struct PokerHand Player_Cards){
   int i,j;
   for (i=0; i<=12; i++){
@@ -35,7 +47,8 @@ struct PokerHand MakeHand(struct PokerHand Player_Cards){
     //add the rank to the poker_ranks variable
     Player_Cards.poker_ranks[card_rank]+=1;
     Player_Cards.poker_suits[card_suit]+=1;
-    printf("%c%c ", ranks[card_rank], suits[card_suit]);
+    AsciiCard(card_rank, card_suit);
+    //printf("%c%c \n", ranks[card_rank], suits[card_suit]);
     card_counter+=1;
   }
   printf("\n");
@@ -44,8 +57,6 @@ struct PokerHand MakeHand(struct PokerHand Player_Cards){
 
 
 struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
-  const char ranks[]={'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
-  const char suits[]={'s', 'h', 'c', 'd'};
   struct FinalHand Final;
   int i;
   Final.best_hand=high_card;
@@ -55,40 +66,40 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
       case 4:
         //if there are 4 of a kind, then we have quads
         Final.best_hand=quads;
-        Final.TypeOfHand[0]=ranks[i];
+        Final.TypeOfHand[0]=i;
         break;
       case 3:
         //if there are 3 of a kind, then we have trips
         if(Final.best_hand==pair){
           Final.best_hand=full_house;
           Final.TypeOfHand[1]=Final.TypeOfHand[0];
-          Final.TypeOfHand[0]=ranks[i];
+          Final.TypeOfHand[0]=i;
         }
         else{
         Final.best_hand=trips;
-        Final.TypeOfHand[0]=ranks[i];
+        Final.TypeOfHand[0]=i;
         }
         break;
       case 2:
         //if there is 2 of a kind, then we have a pair
         if(Final.best_hand==trips){
           Final.best_hand=full_house;
-          Final.TypeOfHand[1]=ranks[i];
+          Final.TypeOfHand[1]=i;
         }
         if(Final.best_hand==pair){
           Final.best_hand=two_pair;
-          Final.TypeOfHand[1]=ranks[i];
+          Final.TypeOfHand[1]=i;
         }
         else{
           Final.best_hand=pair;
-          Final.TypeOfHand[0]=ranks[i];
+          Final.TypeOfHand[0]=i;
         }
         break;
       case 1:
         //otherwise, it's just a high card
         if(Final.best_hand==high_card){
           Final.best_hand=high_card;
-          Final.TypeOfHand[0]=ranks[i];
+          Final.TypeOfHand[0]=i;
         }
         break;
       default:
@@ -100,7 +111,7 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
       for(i=0; i<4; i++){
         if(Player_Cards.poker_suits[i]==5){
           Final.best_hand=flush;
-          Final.TypeOfHand[0]=suits[i];
+          Final.TypeOfHand[0]=i;
         }
       }
     }
@@ -109,11 +120,11 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
       if(Player_Cards.poker_ranks[0]==1 && Player_Cards.poker_ranks[1]==1 && Player_Cards.poker_ranks[2]==1 && Player_Cards.poker_ranks[3]==1 && Player_Cards.poker_ranks[12]==1){
         if(Final.best_hand==flush){
           Final.best_hand=straight_flush;
-          Final.TypeOfHand[1]=ranks[3];
+          Final.TypeOfHand[1]=3;
         }
         else{
         Final.best_hand=straight;
-        Final.TypeOfHand[0]=ranks[3];
+        Final.TypeOfHand[0]=3;
         }
       }
       for(i=0; i<=8; i++){
@@ -122,11 +133,11 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
         if(Player_Cards.poker_ranks[i]==1 && Player_Cards.poker_ranks[i+1]==1 && Player_Cards.poker_ranks[i+2]==1 && Player_Cards.poker_ranks[i+3]==1 && Player_Cards.poker_ranks[i+4]==1){
           if(Final.best_hand==flush){
             Final.best_hand=straight_flush;
-            Final.TypeOfHand[1]=ranks[i+4];
+            Final.TypeOfHand[1]=i+4;
           }
           else{
           Final.best_hand=straight;
-          Final.TypeOfHand[0]=ranks[i+4];
+          Final.TypeOfHand[0]=i+4;
           }
         }
         else{
@@ -138,29 +149,31 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
     return Final;
 }
 void PrintCards(struct FinalHand besthand){
+  const char ranks[]={'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+  const char suits[]={'s', 'h', 'c', 'd'};
   if(besthand.best_hand==high_card){
-    printf("High Card %c", besthand.TypeOfHand[0]);
+    printf("High Card %c", ranks[besthand.TypeOfHand[0]]);
   }
   else if(besthand.best_hand==pair){
-    printf("Pair of %cs", besthand.TypeOfHand[0]);
+    printf("Pair of %cs", ranks[besthand.TypeOfHand[0]]);
   }
   else if(besthand.best_hand==two_pair){
-    printf("Two Pair %c and %c", besthand.TypeOfHand[0], besthand.TypeOfHand[1]);
+    printf("Two Pair %c and %c", ranks[besthand.TypeOfHand[0]], besthand.TypeOfHand[1]);
   }
   else if(besthand.best_hand==trips){
-    printf("Trip %cs", besthand.TypeOfHand[0]);
+    printf("Trip %cs", ranks[besthand.TypeOfHand[0]]);
   }
   else if(besthand.best_hand==full_house){
-    printf("Full House %c full of %c", besthand.TypeOfHand[0], besthand.TypeOfHand[1]);
+    printf("Full House %c full of %c", ranks[besthand.TypeOfHand[0]], besthand.TypeOfHand[1]);
   }
   else if (besthand.best_hand==quads){
-    printf("Quad %cs", besthand.TypeOfHand[0]);
+    printf("Quad %cs", ranks[besthand.TypeOfHand[0]]);
   }
   else if (besthand.best_hand==straight){
-    printf("Straight %c high", besthand.TypeOfHand[0]);
+    printf("Straight %c high", ranks[besthand.TypeOfHand[0]]);
   }
   else if (besthand.best_hand==flush){
-    switch(besthand.TypeOfHand[0]){
+    switch(suits[besthand.TypeOfHand[0]]){
       case 's':
         printf("Flush: Spades ");
         break;
@@ -179,7 +192,7 @@ void PrintCards(struct FinalHand besthand){
   }
 
   else if (besthand.best_hand==straight_flush){
-    switch(besthand.TypeOfHand[0]){
+    switch(suits[besthand.TypeOfHand[0]]){
       case 's':
         printf("Straight Flush: Spades, %c high ", besthand.TypeOfHand[1]);
         break;
@@ -198,6 +211,80 @@ void PrintCards(struct FinalHand besthand){
 
     }
 
+
+  printf("\n");
+}
+
+void PrintAsciiCards(struct FinalHand besthand) {
+  if(besthand.best_hand==high_card){
+    AsciiCard(besthand.TypeOfHand[0], -1);
+  }
+  else if(besthand.best_hand==pair){
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+  }
+  else if(besthand.best_hand==two_pair){
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[1], -1);
+    AsciiCard(besthand.TypeOfHand[1], -1);
+  }
+  else if(besthand.best_hand==trips){
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+  }
+  else if(besthand.best_hand==full_house){
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[1], -1);
+    AsciiCard(besthand.TypeOfHand[1], -1);
+  }
+  else if (besthand.best_hand==quads){
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+    AsciiCard(besthand.TypeOfHand[0], -1);
+  }
+  else if (besthand.best_hand==straight){
+    if(besthand.TypeOfHand[0] == 3) {
+      AsciiCard(12, -1);
+      AsciiCard(0, -1);
+      AsciiCard(1, -1);
+      AsciiCard(2, -1);
+      AsciiCard(3, -1);
+    } else {
+      AsciiCard(besthand.TypeOfHand[0] - 4, -1);
+      AsciiCard(besthand.TypeOfHand[0] - 3, -1);
+      AsciiCard(besthand.TypeOfHand[0] - 2, -1);
+      AsciiCard(besthand.TypeOfHand[0] - 1, -1);
+      AsciiCard(besthand.TypeOfHand[0], -1);
+    }
+  }
+  else if (besthand.best_hand==flush){
+    AsciiCard(-1, besthand.TypeOfHand[0]);
+    AsciiCard(-1, besthand.TypeOfHand[0]);
+    AsciiCard(-1, besthand.TypeOfHand[0]);
+    AsciiCard(-1, besthand.TypeOfHand[0]);
+    AsciiCard(-1, besthand.TypeOfHand[0]);
+  }
+
+  else if (besthand.best_hand==straight_flush){
+    if(besthand.TypeOfHand[1] == 3) {
+      AsciiCard(12, besthand.TypeOfHand[0]);
+      AsciiCard(0, besthand.TypeOfHand[0]);
+      AsciiCard(1, besthand.TypeOfHand[0]);
+      AsciiCard(2, besthand.TypeOfHand[0]);
+      AsciiCard(3, besthand.TypeOfHand[0]);
+    } else {
+      AsciiCard(besthand.TypeOfHand[1] - 4, besthand.TypeOfHand[0]);
+      AsciiCard(besthand.TypeOfHand[1] - 3, besthand.TypeOfHand[0]);
+      AsciiCard(besthand.TypeOfHand[1] - 2, besthand.TypeOfHand[0]);
+      AsciiCard(besthand.TypeOfHand[1] - 1, besthand.TypeOfHand[0]);
+      AsciiCard(besthand.TypeOfHand[1], besthand.TypeOfHand[0]);
+    }
+  }
 
   printf("\n");
 }
@@ -226,8 +313,8 @@ struct FinalHand WhoWins(struct FinalHand besthands[], int player_count){
     }
 
   }
-  printf("Player %d wins with: ", player_number);
-  PrintCards(Winner);
+  printf("Player %d wins with: \n", player_number);
+  PrintAsciiCards(Winner);
 
   return Winner;
 
