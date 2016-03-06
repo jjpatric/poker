@@ -106,7 +106,7 @@ struct FinalHand BestFiveCards(struct PokerHand Player_Cards){
     }
 
     if(Final.best_hand<=flush){
-      if(Player_Cards.poker_ranks[0]==1 && Player_Cards.poker_ranks[9]==1 && Player_Cards.poker_ranks[10]==1 && Player_Cards.poker_ranks[11]==1 && Player_Cards.poker_ranks[12]==1){
+      if(Player_Cards.poker_ranks[0]==1 && Player_Cards.poker_ranks[1]==1 && Player_Cards.poker_ranks[2]==1 && Player_Cards.poker_ranks[3]==1 && Player_Cards.poker_ranks[12]==1){
         if(Final.best_hand==flush){
           Final.best_hand=straight_flush;
           Final.TypeOfHand[1]=ranks[3];
