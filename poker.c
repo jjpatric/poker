@@ -13,9 +13,9 @@ void AsciiCard(int card_rank, int card_suit) {
   const char* suits[]={"♠", "♥", "♦", "♣"};
   if(card_suit != -1 && card_rank != -1) {
     printf(" ______ \n|%c     |\n|%s     |\n", ranks[card_rank], suits[card_suit]);
-  } else if(card_rank != -1) {
+  } else if(card_suit ==-1) {
     printf(" ______ \n|%c     |\n|      |\n", ranks[card_rank]);
-  } else if(card_suit != -1) {
+  } else if(card_rank == -1) {
     printf(" ______ \n|      |\n|%s     |\n", suits[card_suit]);
   }
 }
@@ -32,7 +32,7 @@ struct PokerHand MakeHand(struct PokerHand Player_Cards){
   }
 
   const char ranks[]={'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
-  const char suits[]={'s', 'h', 'c', 'd'};
+  const char suits[]={'s', 'h', 'd', 'c'};
   int card_counter=0, card_rank, card_suit;
   while(card_counter<hand_size){
     //rank is random number from 1 to 13
@@ -158,13 +158,13 @@ void PrintCards(struct FinalHand besthand){
     printf("Pair of %cs", ranks[besthand.TypeOfHand[0]]);
   }
   else if(besthand.best_hand==two_pair){
-    printf("Two Pair %c and %c", ranks[besthand.TypeOfHand[0]], besthand.TypeOfHand[1]);
+    printf("Two Pair %cs and %cs", ranks[besthand.TypeOfHand[0]], ranks[besthand.TypeOfHand[1]]);
   }
   else if(besthand.best_hand==trips){
     printf("Trip %cs", ranks[besthand.TypeOfHand[0]]);
   }
   else if(besthand.best_hand==full_house){
-    printf("Full House %c full of %c", ranks[besthand.TypeOfHand[0]], besthand.TypeOfHand[1]);
+    printf("Full House %cs full of %cs", ranks[besthand.TypeOfHand[0]], ranks[besthand.TypeOfHand[1]]);
   }
   else if (besthand.best_hand==quads){
     printf("Quad %cs", ranks[besthand.TypeOfHand[0]]);
@@ -194,16 +194,16 @@ void PrintCards(struct FinalHand besthand){
   else if (besthand.best_hand==straight_flush){
     switch(suits[besthand.TypeOfHand[0]]){
       case 's':
-        printf("Straight Flush: Spades, %c high ", besthand.TypeOfHand[1]);
+        printf("Straight Flush: Spades, %c high ", ranks[besthand.TypeOfHand[1]]);
         break;
       case 'h':
-        printf("Straight Flush:  Hearts, %c high ", besthand.TypeOfHand[1]);
+        printf("Straight Flush: Hearts, %c high ", ranks[besthand.TypeOfHand[1]]);
         break;
       case 'd':
-        printf("Straight Flush:  Diamonds, %c high ", besthand.TypeOfHand[1]);
+        printf("Straight Flush: Diamonds, %c high ", ranks[besthand.TypeOfHand[1]]);
         break;
       case 'c':
-        printf("Straight Flush:  Clubs, %c high ", besthand.TypeOfHand[1]);
+        printf("Straight Flush: Clubs, %c high ", ranks[besthand.TypeOfHand[1]]);
         break;
       default:
         break;
