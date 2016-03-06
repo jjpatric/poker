@@ -1,5 +1,5 @@
 /*
-Poker Hand Simulator by Justin Stevens
+Poker Hand Simulator by Justin Stevens and Zeb Burke-Conte 
 Deals out a random poker hand, and then tells the user what hand they have.
 */
 
